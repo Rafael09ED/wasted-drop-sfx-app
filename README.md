@@ -1,10 +1,13 @@
 # Phone Drop Sound Detection App
 
-![image](https://github.com/user-attachments/assets/c52c8dde-a3fa-48b9-83c9-3a5d8e596281)
 
 ## Description
 
 An Android app that detects when your phone is dropped or experiences a sudden impact and plays your selected custom sound effect. Uses the device's accelerometer to detect drops and responds with your chosen audio file.
+
+![image](https://github.com/user-attachments/assets/baa9f0ce-2cb7-43f6-9871-4dad7d659ea5)
+![image](https://github.com/user-attachments/assets/92d0afde-9bd3-4986-8cc5-75f3718b6e4a)
+
 
 ## Features
 
