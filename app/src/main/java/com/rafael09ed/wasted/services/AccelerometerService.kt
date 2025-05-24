@@ -47,7 +47,7 @@ class AccelerometerService : Service(), FallDetector.FallDetectionListener {
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         
         // Initialize fall detector and sound player
-        fallDetector = FallDetector()
+        fallDetector = FallDetector() // Pass context for SharedPreferences access
         fallDetector.setFallDetectionListener(this)
         soundPlayer = SoundPlayer(this)
         
@@ -75,8 +75,8 @@ class AccelerometerService : Service(), FallDetector.FallDetectionListener {
         // Start foreground service with notification
         startForeground(NOTIFICATION_ID, createNotification())
         
-        // Acquire wake lock
-        wakeLock?.acquire(10*60*1000L /*10 minutes*/)
+        // Acquire wake lock indefinitely while service is running
+        wakeLock?.acquire()
         
         // Register accelerometer listener
         accelerometerSensor?.let { sensor ->

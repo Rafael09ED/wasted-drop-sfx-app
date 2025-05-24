@@ -231,14 +231,6 @@ fun SoundPicker(
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
             }
             
-            // Option 1: Browse MP3/Audio Files
-            Text(
-                text = "Option 1: Browse Audio Files",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            
             Button(
                 onClick = { requestFilePermissionAndOpenPicker() },
                 modifier = Modifier.fillMaxWidth()
@@ -254,14 +246,6 @@ fun SoundPicker(
             )
             
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Option 2: System Sounds
-            Text(
-                text = "Option 2: System Sounds",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
             
             Button(
                 onClick = { openRingtonePickerUI() },
