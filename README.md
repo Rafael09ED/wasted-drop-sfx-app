@@ -39,6 +39,7 @@ This app does not include any copyrighted material from Rockstar Games or other 
 
 ## License
 
+CC BY-NC-SA 4.0
 This project is for educational and entertainment purposes only.
 
 ## Disclaimer
