@@ -1,4 +1,4 @@
-# Phone Drop Sound Detection App
+# Wasted - Dropped Phone SFX App
 
 
 ## Description
