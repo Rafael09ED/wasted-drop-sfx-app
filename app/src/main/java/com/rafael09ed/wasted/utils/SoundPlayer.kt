@@ -3,25 +3,20 @@ package com.rafael09ed.wasted.utils
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
-import com.rafael09ed.wasted.R
 
 class SoundPlayer(private val context: Context) {
     
     private var mediaPlayer: MediaPlayer? = null
     
-    fun playSound(soundUri: Uri? = null) {
+    fun playSound(soundUri: Uri?) {
+        if (soundUri == null) return
+        
         try {
             // Release any existing player
             mediaPlayer?.release()
             
-            // Create new MediaPlayer and play the sound
-            mediaPlayer = if (soundUri != null) {
-                // Play custom sound from URI
-                MediaPlayer.create(context, soundUri)
-            } else {
-                // Play default built-in sound
-                MediaPlayer.create(context, R.raw.wasted)
-            }
+            // Create new MediaPlayer and play the custom sound from URI
+            mediaPlayer = MediaPlayer.create(context, soundUri)
             
             mediaPlayer?.setOnCompletionListener { player ->
                 player.release()
@@ -30,16 +25,7 @@ class SoundPlayer(private val context: Context) {
             mediaPlayer?.start()
         } catch (e: Exception) {
             e.printStackTrace()
-            // If custom sound fails, try to play default sound as fallback
-            if (soundUri != null) {
-                playSound(null)
-            }
         }
-    }
-    
-    // Keep the old method for backward compatibility
-    fun playWastedSound() {
-        playSound(null)
     }
     
     fun stopSound() {

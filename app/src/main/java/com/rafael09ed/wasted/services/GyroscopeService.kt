@@ -123,15 +123,11 @@ class GyroscopeService : Service(), FallDetector.FallDetectionListener {
     
     override fun onFallDetected() {
         // Get the selected sound from preferences and play it
-        val isBuiltIn = sharedPrefs.getBoolean("sound_is_built_in", true)
+        val soundUriString = sharedPrefs.getString("sound_uri", null)
+        val soundUri = soundUriString?.let { Uri.parse(it) }
         
-        if (isBuiltIn) {
-            // Play built-in sound
-            soundPlayer.playSound(null)
-        } else {
-            // Play custom sound
-            val soundUriString = sharedPrefs.getString("sound_uri", null)
-            val soundUri = soundUriString?.let { Uri.parse(it) }
+        // Only play sound if a custom sound is selected
+        if (soundUri != null) {
             soundPlayer.playSound(soundUri)
         }
     }

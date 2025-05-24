@@ -207,8 +207,8 @@ fun FallDetectionApp(
                                     .apply()
                                 
                                 isEnabled = false
-                            } else {
-                                // Start the service
+                            } else if (selectedSound != null) {
+                                // Start the service only if a sound is selected
                                 val intent = Intent(context, GyroscopeService::class.java).apply {
                                     action = GyroscopeService.ACTION_START_MONITORING
                                 }
@@ -223,13 +223,16 @@ fun FallDetectionApp(
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        enabled = isEnabled || selectedSound != null, // Disable button if no sound selected
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (isEnabled) MaterialTheme.colorScheme.error
                                            else MaterialTheme.colorScheme.primary
                         )
                     ) {
                         Text(
-                            text = if (isEnabled) "Disable Fall Detection" else "Enable Fall Detection",
+                            text = if (isEnabled) "Disable Fall Detection" 
+                                  else if (selectedSound != null) "Enable Fall Detection"
+                                  else "Select Sound First",
                             fontSize = 16.sp,
                             modifier = Modifier.padding(8.dp)
                         )
@@ -328,27 +331,33 @@ fun NotificationPermissionDialog(
     )
 }
 
-private fun loadSelectedSound(sharedPrefs: SharedPreferences): SoundOption {
+private fun loadSelectedSound(sharedPrefs: SharedPreferences): SoundOption? {
     val isBuiltIn = sharedPrefs.getBoolean("sound_is_built_in", true)
     return if (isBuiltIn) {
-        SoundOption.getDefaultSound()
+        // No more built-in sound, return null
+        null
     } else {
-        val soundName = sharedPrefs.getString("sound_name", "Custom Sound") ?: "Custom Sound"
+        val soundName = sharedPrefs.getString("sound_name", null)
         val soundUriString = sharedPrefs.getString("sound_uri", null)
         val soundUri = soundUriString?.let { Uri.parse(it) }
-        SoundOption(
-            id = "custom_saved",
-            name = soundName,
-            uri = soundUri,
-            isBuiltIn = false
-        )
+        
+        if (soundName != null && soundUri != null) {
+            SoundOption(
+                id = "custom_saved",
+                name = soundName,
+                uri = soundUri,
+                isBuiltIn = false
+            )
+        } else {
+            null
+        }
     }
 }
 
 private fun saveSelectedSound(sharedPrefs: SharedPreferences, sound: SoundOption) {
     sharedPrefs.edit()
-        .putBoolean("sound_is_built_in", sound.isBuiltIn)
+        .putBoolean("sound_is_built_in", false)
         .putString("sound_name", sound.name)
-        .putString("sound_uri", sound.uri?.toString())
+        .putString("sound_uri", sound.uri.toString())
         .apply()
 }
