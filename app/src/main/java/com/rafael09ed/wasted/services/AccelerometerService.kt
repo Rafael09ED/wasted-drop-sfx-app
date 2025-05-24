@@ -20,17 +20,17 @@ import com.rafael09ed.wasted.R
 import com.rafael09ed.wasted.utils.FallDetector
 import com.rafael09ed.wasted.utils.SoundPlayer
 
-class GyroscopeService : Service(), FallDetector.FallDetectionListener {
+class AccelerometerService : Service(), FallDetector.FallDetectionListener {
     
     companion object {
-        const val CHANNEL_ID = "GYROSCOPE_SERVICE_CHANNEL"
+        const val CHANNEL_ID = "ACCELEROMETER_SERVICE_CHANNEL"
         const val NOTIFICATION_ID = 1
         const val ACTION_START_MONITORING = "START_MONITORING"
         const val ACTION_STOP_MONITORING = "STOP_MONITORING"
     }
     
     private lateinit var sensorManager: SensorManager
-    private var gyroscopeSensor: Sensor? = null
+    private var accelerometerSensor: Sensor? = null
     private lateinit var fallDetector: FallDetector
     private lateinit var soundPlayer: SoundPlayer
     private lateinit var sharedPrefs: SharedPreferences
@@ -42,9 +42,9 @@ class GyroscopeService : Service(), FallDetector.FallDetectionListener {
         // Initialize shared preferences
         sharedPrefs = getSharedPreferences("fall_detection_prefs", Context.MODE_PRIVATE)
         
-        // Initialize sensor manager and gyroscope
+        // Initialize sensor manager and accelerometer
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         
         // Initialize fall detector and sound player
         fallDetector = FallDetector()
@@ -58,7 +58,7 @@ class GyroscopeService : Service(), FallDetector.FallDetectionListener {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK,
-            "WastedApp::GyroscopeWakeLock"
+            "WastedApp::AccelerometerWakeLock"
         )
     }
     
@@ -78,8 +78,8 @@ class GyroscopeService : Service(), FallDetector.FallDetectionListener {
         // Acquire wake lock
         wakeLock?.acquire(10*60*1000L /*10 minutes*/)
         
-        // Register gyroscope listener
-        gyroscopeSensor?.let { sensor ->
+        // Register accelerometer listener
+        accelerometerSensor?.let { sensor ->
             sensorManager.registerListener(
                 fallDetector,
                 sensor,
@@ -95,7 +95,7 @@ class GyroscopeService : Service(), FallDetector.FallDetectionListener {
                 "Fall Detection Service",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Monitors gyroscope for fall detection"
+                description = "Monitors accelerometer for fall detection"
                 setShowBadge(false)
             }
             
@@ -113,7 +113,7 @@ class GyroscopeService : Service(), FallDetector.FallDetectionListener {
         
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Fall Detection Active")
-            .setContentText("Monitoring gyroscope for falls...")
+            .setContentText("Monitoring accelerometer for falls...")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
             .setOngoing(true)

@@ -2,13 +2,13 @@
     <string name="app_name">Wasted</string>
     <string name="fall_detection_active">Fall Detection Active</string>
     <string name="fall_detection_inactive">Fall Detection Inactive</string>
-    <string name="monitoring_gyroscope">Monitoring gyroscope for falls in the background</string>
+    <string name="monitoring_accelerometer">Monitoring accelerometer for falls in the background</string>
     <string name="tap_to_start">Tap the button below to start monitoring</string>
     <string name="enable_fall_detection">Enable Fall Detection</string>
     <string name="disable_fall_detection">Disable Fall Detection</string>
-    <string name="app_description">When enabled, the app will monitor your device\'s gyroscope for sudden movements followed by stops, indicating a potential fall. When detected, it will play your selected sound effect.</string>
+    <string name="app_description">When enabled, the app will monitor your device\'s accelerometer for sudden movements followed by stops, indicating a potential fall. When detected, it will play your selected sound effect.</string>
     <string name="notification_title">Fall Detection Active</string>
-    <string name="notification_text">Monitoring gyroscope for falls...</string>
+    <string name="notification_text">Monitoring accelerometer for falls...</string>
     
     <!-- Sound picker strings -->
     <string name="sound_selection">Sound Selection</string>

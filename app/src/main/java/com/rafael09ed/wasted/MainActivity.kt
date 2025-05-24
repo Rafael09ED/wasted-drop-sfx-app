@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.rafael09ed.wasted.data.SoundOption
-import com.rafael09ed.wasted.services.GyroscopeService
+import com.rafael09ed.wasted.services.AccelerometerService
 import com.rafael09ed.wasted.ui.components.SoundPicker
 import com.rafael09ed.wasted.ui.theme.WastedTheme
 
@@ -178,7 +178,7 @@ fun FallDetectionApp(
                     
                     if (isEnabled) {
                         Text(
-                            text = "Monitoring gyroscope for falls in the background",
+                            text = "Monitoring accelerometer for falls in the background",
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -196,8 +196,8 @@ fun FallDetectionApp(
                         onClick = {
                             if (isEnabled) {
                                 // Stop the service
-                                val intent = Intent(context, GyroscopeService::class.java).apply {
-                                    action = GyroscopeService.ACTION_STOP_MONITORING
+                                val intent = Intent(context, AccelerometerService::class.java).apply {
+                                    action = AccelerometerService.ACTION_STOP_MONITORING
                                 }
                                 context.startService(intent)
                                 
@@ -209,8 +209,8 @@ fun FallDetectionApp(
                                 isEnabled = false
                             } else if (selectedSound != null) {
                                 // Start the service only if a sound is selected
-                                val intent = Intent(context, GyroscopeService::class.java).apply {
-                                    action = GyroscopeService.ACTION_START_MONITORING
+                                val intent = Intent(context, AccelerometerService::class.java).apply {
+                                    action = AccelerometerService.ACTION_START_MONITORING
                                 }
                                 context.startForegroundService(intent)
                                 
@@ -241,7 +241,7 @@ fun FallDetectionApp(
             }
             
             Text(
-                text = "When enabled, the app will monitor your device's gyroscope for sudden movements followed by stops, indicating a potential fall. When detected, it will play your selected sound effect.",
+                text = "When enabled, the app will monitor your device's accelerometer for sudden movements followed by stops, indicating a potential fall. When detected, it will play your selected sound effect.",
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 14.sp

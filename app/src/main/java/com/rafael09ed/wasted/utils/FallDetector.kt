@@ -30,7 +30,7 @@ class FallDetector : SensorEventListener {
     }
     
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type != Sensor.TYPE_GYROSCOPE) return
+        if (event?.sensor?.type != Sensor.TYPE_ACCELEROMETER) return
         
         val currentTime = System.currentTimeMillis()
         
@@ -42,7 +42,7 @@ class FallDetector : SensorEventListener {
         val z = event.values[2]
         
         if (lastUpdate != 0L) {
-            // Calculate change in rotation rate
+            // Calculate change in acceleration
             val deltaX = kotlin.math.abs(x - lastX)
             val deltaY = kotlin.math.abs(y - lastY)
             val deltaZ = kotlin.math.abs(z - lastZ)

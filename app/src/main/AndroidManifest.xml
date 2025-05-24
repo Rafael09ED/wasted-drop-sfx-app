@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions for gyroscope and background operation -->
+    <!-- Permissions for accelerometer and background operation -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
@@ -14,8 +14,8 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     
-    <!-- Require gyroscope sensor -->
-    <uses-feature android:name="android.hardware.sensor.gyroscope" android:required="true" />
+    <!-- Require accelerometer sensor -->
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -39,9 +39,9 @@
             </intent-filter>
         </activity>
         
-        <!-- Gyroscope monitoring service -->
+        <!-- Accelerometer monitoring service -->
         <service
-            android:name=".services.GyroscopeService"
+            android:name=".services.AccelerometerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
