@@ -13,7 +13,6 @@ import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import com.rafael09ed.wasted.MainActivity
 import com.rafael09ed.wasted.R
@@ -34,7 +33,6 @@ class AccelerometerService : Service(), FallDetector.FallDetectionListener {
     private lateinit var fallDetector: FallDetector
     private lateinit var soundPlayer: SoundPlayer
     private lateinit var sharedPrefs: SharedPreferences
-    private var wakeLock: PowerManager.WakeLock? = null
     
     override fun onCreate() {
         super.onCreate()
@@ -53,13 +51,6 @@ class AccelerometerService : Service(), FallDetector.FallDetectionListener {
         
         // Create notification channel
         createNotificationChannel()
-        
-        // Acquire wake lock to keep CPU running
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK,
-            "WastedApp::AccelerometerWakeLock"
-        )
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -75,15 +66,16 @@ class AccelerometerService : Service(), FallDetector.FallDetectionListener {
         // Start foreground service with notification
         startForeground(NOTIFICATION_ID, createNotification())
         
-        // Acquire wake lock indefinitely while service is running
-        wakeLock?.acquire()
-        
-        // Register accelerometer listener
+        // Register accelerometer listener with batching for power efficiency
         accelerometerSensor?.let { sensor ->
+            val samplingPeriodUs = 20_000 // 50Hz (20ms intervals)
+            val maxReportLatencyUs = 1_000_000 // 1 second batching
+            
             sensorManager.registerListener(
                 fallDetector,
                 sensor,
-                SensorManager.SENSOR_DELAY_GAME // ~50Hz
+                samplingPeriodUs,
+                maxReportLatencyUs // This enables FIFO batching
             )
         }
     }
@@ -137,13 +129,6 @@ class AccelerometerService : Service(), FallDetector.FallDetectionListener {
         
         // Unregister sensor listener
         sensorManager.unregisterListener(fallDetector)
-        
-        // Release wake lock
-        wakeLock?.let { lock ->
-            if (lock.isHeld) {
-                lock.release()
-            }
-        }
         
         // Clean up sound player
         soundPlayer.cleanup()

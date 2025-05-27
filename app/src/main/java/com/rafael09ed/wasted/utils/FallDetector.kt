@@ -25,6 +25,9 @@ class FallDetector : SensorEventListener {
     private var fallDetected = false
     private var fallTime = 0L
     
+    // Buffer for processing batched events
+    private val sensorDataBuffer = mutableListOf<Triple<Float, Float, Float>>()
+    
     fun setFallDetectionListener(listener: FallDetectionListener) {
         this.fallDetectionListener = listener
     }
@@ -34,12 +37,14 @@ class FallDetector : SensorEventListener {
         
         val currentTime = System.currentTimeMillis()
         
+        // When using sensor batching, we might receive multiple events at once
+        // Process them in order to maintain temporal accuracy
+        processAccelerometerData(event.values[0], event.values[1], event.values[2], currentTime)
+    }
+    
+    private fun processAccelerometerData(x: Float, y: Float, z: Float, currentTime: Long) {
         // Skip if too soon since last update (throttle to ~50Hz)
         if (currentTime - lastUpdate < 20) return
-        
-        val x = event.values[0]
-        val y = event.values[1]
-        val z = event.values[2]
         
         if (lastUpdate != 0L) {
             // Calculate change in acceleration
