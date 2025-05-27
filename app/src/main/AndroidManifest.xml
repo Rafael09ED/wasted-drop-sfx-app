@@ -46,6 +46,13 @@
             android:exported="false"
             android:foregroundServiceType="dataSync" />
         
+        <!-- Data recording service -->
+        <service
+            android:name=".services.DataRecordingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+        
         <!-- Boot receiver to restart service after reboot -->
         <receiver
             android:name=".receivers.BootReceiver"

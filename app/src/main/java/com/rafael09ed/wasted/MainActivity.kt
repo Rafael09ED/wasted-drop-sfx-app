@@ -26,9 +26,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.rafael09ed.wasted.data.SoundOption
 import com.rafael09ed.wasted.services.AccelerometerService
 import com.rafael09ed.wasted.ui.components.SoundPicker
+import com.rafael09ed.wasted.ui.screens.DataRecordingScreen
 import com.rafael09ed.wasted.ui.theme.WastedTheme
 
 class MainActivity : ComponentActivity() {
@@ -60,15 +65,32 @@ class MainActivity : ComponentActivity() {
         
         setContent {
             WastedTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    FallDetectionApp(
-                        modifier = Modifier.padding(innerPadding),
-                        sharedPrefs = sharedPrefs,
-                        notificationPermissionGranted = notificationPermissionGranted.value,
-                        showNotificationPermissionDialog = showNotificationPermissionDialog.value,
-                        onDismissPermissionDialog = { showNotificationPermissionDialog.value = false },
-                        onRequestNotificationPermission = { requestNotificationPermission() }
-                    )
+                val navController = rememberNavController()
+                
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        BottomNavigationBar(navController = navController)
+                    }
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "fall_detection",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("fall_detection") {
+                            FallDetectionScreen(
+                                sharedPrefs = sharedPrefs,
+                                notificationPermissionGranted = notificationPermissionGranted.value,
+                                showNotificationPermissionDialog = showNotificationPermissionDialog.value,
+                                onDismissPermissionDialog = { showNotificationPermissionDialog.value = false },
+                                onRequestNotificationPermission = { requestNotificationPermission() }
+                            )
+                        }
+                        composable("data_recording") {
+                            DataRecordingScreen()
+                        }
+                    }
                 }
             }
         }
@@ -99,8 +121,35 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun FallDetectionApp(
-    modifier: Modifier = Modifier,
+fun BottomNavigationBar(navController: NavHostController) {
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    
+    NavigationBar {
+        NavigationBarItem(
+            selected = currentRoute == "fall_detection",
+            onClick = { 
+                if (currentRoute != "fall_detection") {
+                    navController.navigate("fall_detection")
+                }
+            },
+            icon = { Text("🔊", fontSize = 20.sp) },
+            label = { Text("Fall Detection") }
+        )
+        NavigationBarItem(
+            selected = currentRoute == "data_recording",
+            onClick = { 
+                if (currentRoute != "data_recording") {
+                    navController.navigate("data_recording")
+                }
+            },
+            icon = { Text("📊", fontSize = 20.sp) },
+            label = { Text("Data Recording") }
+        )
+    }
+}
+
+@Composable
+fun FallDetectionScreen(
     sharedPrefs: SharedPreferences,
     notificationPermissionGranted: Boolean,
     showNotificationPermissionDialog: Boolean,
@@ -117,7 +166,7 @@ fun FallDetectionApp(
         mutableStateOf(loadSelectedSound(sharedPrefs))
     }
     
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

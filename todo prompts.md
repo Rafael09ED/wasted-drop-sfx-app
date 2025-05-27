@@ -1,1 +1,0 @@
-I want to create another feature where I can record the relevant accelerometer data in the background. The feature will be enabled on a new page where we can enable or disable data recording. While recording it will show a notification with a button I can click that will track if there was a drop.
